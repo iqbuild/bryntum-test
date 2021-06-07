@@ -1,18 +1,17 @@
 <template>
 	<div>
-		<Icon name="users" family="MaterialIcons" :size="16" />
+		<GanttDemo />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Icon from './components/Icon';
-// import GanttDemo from './components/BryntumGantt/BryntumGantt.example.vue';
+import GanttDemo from './components/BryntumGantt/BryntumGantt.example.vue';
 
 export default defineComponent({
 	name: 'App',
 	components: {
-		Icon,
+		GanttDemo,
 	},
 });
 </script>
