@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GanttDemo from './components/BryntumGantt/BryntumGantt.example.vue';
+import GanttDemo from './components/Gantt/examples/Gantt.example.vue';
 
 export default defineComponent({
 	name: 'App',
