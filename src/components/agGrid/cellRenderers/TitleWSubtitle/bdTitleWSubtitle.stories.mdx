@@ -1,0 +1,142 @@
+<!--- TitleWSubtitle.stories.mdx -->
+
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+
+import TitleWSubtitle from './bdTitleWSubtitle.vue';
+import './styles.scss';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+
+<Meta title="AgGrid/cellRenderers/TitleWSubtitle" component={TitleWSubtitle} />
+
+# TitleWSubtitle
+
+### Parámetros
+
+Nota: Los parameros enviados a este componente no siguen el comportamiento normal de los props, sino
+que se comportan según la especificación de los cell renderers
+
+Los parametros SOLO deben ser pasados al componente mediante las definiciones de la data de las filas, y debe ser
+un objeto con las siguientes propiedades:
+
+- title: de tipo String
+- subtitle: de tipo String
+- icon: de tipo Object
+  - name: de tipo String, que correspondera al nombre del icono de FontAwesome
+  - position: de tipo String, el cual indicará la posición del icono (por defaul será 'left')
+  - color: de tipo String, el cual corresponde al codigo hex del color que poseerá el icono (por dafault #1285FF)
+  - onPress: de tipo function, la cual se ejecutara al presionar el icono
+
+export const Template = (args) => ({
+	components: { TitleWSubtitle },
+	setup() {
+		return args;
+	},
+	template: '<TitleWSubtitle :params="params"/>',
+});
+
+<Canvas>
+	<Story
+		name="TitleWSubtitle"
+		args={{
+			params: {
+				value: {
+					title: 'Proyecto ejemplo',
+					subtitle: 'Actualizado al 10-04-2021',
+					icon: {
+						name: 'plus',
+						position: 'right',
+						color: '#1285FF',
+						onPress: () => {
+							alert('Pressed');
+						},
+					},
+				},
+			},
+		}}
+	>
+		{Template.bind({})}
+	</Story>
+</Canvas>
+
+### Cell renderers en Ag-AgGrid
+
+Ag-grid por defecto escribe texto plano en cada celda, esto dado a que normalmente las columnas son configuradas con el campo `field`
+con esto, la columna sabe qué valor tomar de la data de la fila.
+
+```
+// column definitions
+const columnDefs = [
+  { field: "make" },
+  { field: "model" },
+  { field: "price" }
+];
+
+// specify rows data
+const rowData = [
+  { make: "Toyota", model: "Celica", price: 35000 },
+  { make: "Ford", model: "Mondeo", price: 32000 },
+  { make: "Porsche", model: "Boxter", price: 72000 }
+];
+
+```
+
+Sin embargo, si queremos que la celda posea componentes mas complejos podemos utilizar los cell renderers.
+
+Los cell renderers son componentes que utiliza ag-grid para desplegar elementos html personalizados. Estos componentes se referencian mediante la propiedad
+`cellRendererFramework` pertenecientes a la definición de la columna.
+
+```
+this.columnDefs = [
+      { field: 'athlete' },
+      { field: 'year' },
+      {
+        field: 'gold',
+        cellRendererFramework: 'medalCellRenderer',
+      },
+      {
+        field: 'silver',
+        cellRendererFramework: 'medalCellRenderer',
+      },
+      {
+        field: 'bronze',
+        cellRendererFramework: 'medalCellRenderer',
+      },
+      {
+        field: 'total',
+        minWidth: 175,
+        cellRendererFramework: 'totalValueRenderer',
+      },
+    ];
+```
+
+En caso de querer enviar paramatros a los cell renderers, tenemos varias opciones; la primera y más simple es enviar un objeto con los parametros dentro
+de la data que corresponde a la columna ( es decir, como si fuera una celda común), ejemplo:
+
+```
+this.columnData.push({
+	headerName: 'Columna',
+	field: 'cocolumnFieldlumn3',
+	width: 270,
+	cellStyle: {
+		display: 'flex',
+		'align-items': 'flex-start',
+		fontSize: '0.8125rem',
+		'border-right': '1px solid #F4F4F4',
+	},
+	lockPosition: true,
+	suppressMenu: true,
+	sort: 'asc',
+
+	cellRendererFramework: 'TitleWSubtitle',
+} as ColDef);
+
+this.rowData.push({
+	columnField: {
+		title: 'Example',
+		date: '20-10-2019',
+	},
+});
+```
+
+Con esto el cell renderer recivirá estos parametros mediante la interfaz `ICellRendererParams` la cual posee la propiedad `value` la cual contendrá los valores enviados.

@@ -1,0 +1,25 @@
+.bd-title-w-subtitle-cell-renderer {
+	display: flex;
+	width: 100%;
+	margin: 0.4rem 0;
+	align-items: center;
+	justify-content: flex-start;
+}
+.bd-title-w-subtitle-cell-renderer .labels-container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.labels-container .title {
+	font-size: 1rem;
+	font-weight: bold;
+}
+
+.labels-container span {
+	line-height: normal;
+}
+
+.bd-title-w-subtitle-cell-renderer.reverse-row {
+	flex-direction: row-reverse;
+	justify-content: flex-end;
+}

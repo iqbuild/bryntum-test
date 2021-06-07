@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Example.vue renders 1`] = `
+<div
+  msg="Example"
+>
+  Example
+</div>
+`;

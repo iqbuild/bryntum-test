@@ -1,0 +1,293 @@
+<!--- bdGantt.stories.mdx -->
+
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+
+import bdGantt from './bdGantt.vue';
+import '@bryntum/gantt/gantt.stockholm.css';
+import './styles.scss';
+import exampleProject from './examples/example_project.json';
+
+<Meta
+	title="Gantt/bdGantt"
+	component={bdGantt}
+	argTypes={{
+		ganttDataLoaded: {
+			control: {
+				type: 'boolean',
+			},
+		},
+		autoHeight: {
+			control: {
+				type: 'boolean',
+			},
+		},
+		zoom: {
+			control: {
+				type: 'number',
+				range: {
+					min: 0,
+					max: 20,
+					step: 1,
+				},
+			},
+		},
+		useCriticalPaths: {
+			control: {
+				type: 'boolean',
+			},
+		},
+	}}
+/>
+
+# Guia para implementar bryntum gantt con vue
+
+## Configurar repositorio de acceso a bryntum
+
+Ya que los productos de bryntum son comerciales es necesario tener una cuenta de brymtum para poder acceder.
+
+```
+npm config set @bryntum:registry=https://npm.bryntum.com
+npm login --registry=https://npm.bryntum.com
+
+Username: user..yourdomain.com
+Password: contraseña
+```
+
+El @ (arroba), se debe reemplazar por dos puntos
+
+### Gantt Config
+
+ganttConfig es el objeto que se le pasa al instanciar la clase Gantt, dentro tiene una propiedad project,
+que es el objeto con el que se instancia ProjectModel
+
+Para saber los parametros de Gantt (https://www.bryntum.com/docs/gantt/#Gantt/view/Gantt)
+Para saber los parametros de ProjectModel (https://www.bryntum.com/docs/gantt/#Gantt/model/ProjectModel)
+
+### Columnas
+
+Es un array de objetos, especificando que columnas se van a utilizar.
+
+#### Campos de columna
+
+```
+type: Tipo de columna (revisar documentación de bryntum para saber los tipos)
+text: Texto de encabezado de la columna
+field: Campo utilizado en la tarea
+```
+
+#### Ejemplo
+
+```
+"columns": [
+        {"type": "name", "text": "Nombre"},
+        {"type": "duration", "text": "Duración"},
+        {"type": "startdate", "text": "Inicio"},
+        {"type": "enddate", "text": "Termino"}
+    ]
+```
+
+### Calendario
+
+El calendario es un array que contiene restricciones en intervalos
+
+#### Modelo de calendario
+
+```
+intervals: Array, de intervalos
+name: String, Nombre del calendario
+unspecifiedTimeIsWorking: Boolean, si no se especifica en el intervalo si es trabajo, se toma como trabajo (default true).
+```
+
+### Modelo intervalo
+
+```
+startDate: Date, Fecha de inicio fija (no recurrente) del intervalo
+endDate: Date, Fecha de termino fija (no recurrente) del intervalo
+recurrentStartDate: String, Fecha de inicio de un intervalo recurrente, el formato es reconocido por la libreria later.
+recurrentEndDate: String, Fecha de termino de un intervalo recurrente.
+isWorking: Boolean, indica si es trabajo o descanso
+```
+
+## Projecto
+
+### Tareas (eventsData)
+
+https://www.bryntum.com/docs/gantt/#Gantt/model/TaskModel
+
+Son las tareas de la gantt
+
+#### Campos mas usados de la tarea (revisar documentacion de bryntum para ver todos los campos)
+
+```
+id: Id de la tarea
+startDate: Date, Fecha de inicio
+duration: Number, duración
+durationUnit: String, unidad de duracion como días, horas.
+baseLines: Array de lineas base
+percentDone: progreso en porcentaje
+rollup: Boolean, Pone la tarea al padre mas cercano
+children: Array de las tareas hijas
+expanded: Boolean, colapsado o no
+calendar: Calendario utilizado para calcular las restricciones, ejemplo fin de semana
+milestone: Boolean, si es hito o no
+constraintType: Tipo de restriccion, puede ser:
+- finishnoearlierthan
+- finishnolaterthan
+- mustfinishon
+- muststarton
+- startnoearlierthan
+- startnolaterthan
+```
+
+#### Ejemplo
+
+```
+[{
+    "id": 1,
+    "percentDone": 2,
+    "effort": 0,
+    "schedulingMode": "Normal",
+    "rollup": false,
+    "duration": 437,
+    "constraintType": "",
+    "expanded": true,
+    "milestone": false,
+    "children": [
+        {
+            "id": 20,
+            "calendar": 18,
+            "percentDone": 0,
+            "startDate": "2022-06-01T18:00:00",
+            "schedulingMode": "Normal",
+            "rollup": true,
+            "duration": 437,
+            "constraintType": "",
+            "expanded": true,
+            "milestone": false
+        }
+    ]
+}]
+```
+
+### Dependencias (dependenciesData)
+
+#### Campos de la dependencia
+
+```
+id: Id de la dependencia
+to: Id de la tarea que va a depender de la otra tarea
+from: Id de la tarea que se va a depender
+lag: Number, retraso
+lagUnit: String, unidad que se mide el retraso, ejemplo dia, horas ("d")
+type: Number, Tipo de dependencia:
+0 StartToStart
+1 StartToEnd
+2 EndToStart
+3 EndToEnd
+```
+
+#### Ejemplo
+
+```
+[
+    {
+        "lag": 0,
+        "from": 20380,
+        "id": 1,
+        "to": 20381,
+        "lagUnit": "d",
+        "type": 2
+    }
+]
+```
+
+### Recursos (resourcesData)
+
+https://www.bryntum.com/docs/gantt/#Gantt/model/ResourceModel
+
+Son los recursos de la gantt
+
+#### Campos de recurso
+
+```
+id: id del recurso
+name: nombre del recurso
+```
+
+#### Ejemplo
+
+```
+[
+    {
+        "name": "Ceramica",
+        "id": 0
+    },
+    {
+        "name": "Hormigón",
+        "id": 1
+    },
+    {
+        "name": "Hombre Día",
+        "id": 2
+    }
+]
+```
+
+### Asignacion de recursos (assignmentsData)
+
+#### Campos de las asignaciones
+
+```
+id: Id de la asignacion
+resourceId: Id del recurso
+eventId: Id de la tarea
+```
+
+### Ejemplo
+
+```
+[
+    {
+        "id": 1,
+        "resourceId": 0,
+        "eventId": 20
+    }
+]
+```
+
+export const Template = (args) => ({
+	components: { bdGantt },
+	setup() {
+		return args;
+	},
+	template:
+		'<bdGantt v-if="ganttDataLoaded" v-model:ganttConfig="ganttConfig" :autoHeight="autoHeight" :zoom="zoom" />',
+});
+
+<Canvas>
+	<Story
+		name="BaseGantt"
+		args={{
+			ganttConfig: {
+				project: {
+					resourcesData: exampleProject.resources,
+					eventsData: exampleProject.tasks.children,
+					dependenciesData: exampleProject.dependencies,
+					assignmentsData: exampleProject.assignments,
+					calendarsData: exampleProject.calendars.children,
+					syncDataOnLoad: true,
+				},
+				startDate: exampleProject.project.startDate,
+				endDate: '2025-03-16T08:00:00',
+				calendar: exampleProject.project.calendar,
+				columns: exampleProject.columns,
+			},
+			ganttDataLoaded: true,
+			autoHeight: true,
+			zoom: 10,
+			useCriticalPaths: false,
+		}}
+	>
+		{Template.bind({})}
+	</Story>
+</Canvas>
