@@ -69,7 +69,7 @@ export default defineComponent({
 			zoom: 10,
 			useCriticalPaths: false,
 			useBaseLines: false,
-			useDependencies: true,
+			useDependencies: false,
 		};
 	},
 

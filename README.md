@@ -1,10 +1,14 @@
-# components-vue 
+# bryntum-test
 
-## StoryBook
+Repository created for test purposes.
 
-```
-yarn storybook
-```
+## Critical path error
+
+Just click on critical path button and look at the console.
+
+## Dependencies error
+
+Click on dependencies button and try to create a valid dependency, the page will hang.
 
 ## Project setup
 
