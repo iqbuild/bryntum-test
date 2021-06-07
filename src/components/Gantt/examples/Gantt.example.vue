@@ -3,13 +3,13 @@
 		<div class="header">
 			<button @click="incrementZoom">Zoom +</button>
 			<button @click="decreaseZoom">Zoom -</button>
-			<button @click="expandAll">Expandir Todos</button>
-			<button @click="collapseAll">Colapsar Todos</button>
+			<button @click="expandAll">Expand all</button>
+			<button @click="collapseAll">Collapse all</button>
 			<button @click="useCriticalPaths = !useCriticalPaths">
-				Ruta critica
+				Critical path
 			</button>
-			<button @click="useDependencies = !useDependencies">Dependencias</button>
-			<button @click="useBaseLines = !useBaseLines">Lineas base</button>
+			<button @click="useDependencies = !useDependencies">Dependencies</button>
+			<button @click="useBaseLines = !useBaseLines">Baselines</button>
 		</div>
 		<div style="height: 90vh">
 			<BuilderGantt
